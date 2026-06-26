@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Автомобили — Flask Cars{% endblock %}
+
+{% block content %}
+<header>
+    <div>
+        <h1>Автомобили</h1>
+        <p class="subtitle">Управление каталогом (PostgreSQL: flask-cars)</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('create_car') }}">+ Добавить</a>
+</header>
+
+<div class="card">
+    {% if cars %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Год</th>
+                <th>Цвет</th>
+                <th>Цена</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in cars %}
+            <tr>
+                <td>{{ car.id }}</td>
+                <td>{{ car.make }}</td>
+                <td>{{ car.model }}</td>
+                <td>{{ car.year }}</td>
+                <td>{{ car.color or "—" }}</td>
+                <td class="price">
+                    {% if car.price is not none %}
+                        {{ "{:,.2f}".format(car.price).replace(",", " ") }} ₽
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="actions">
+                        <a class="btn btn-secondary" href="{{ url_for('edit_car', car_id=car.id) }}">Изменить</a>
+                        <form method="post" action="{{ url_for('delete_car', car_id=car.id) }}"
+                              onsubmit="return confirm('Удалить автомобиль {{ car.make }} {{ car.model }}?');">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <p>Пока нет автомобилей.</p>
+        <a class="btn btn-primary" href="{{ url_for('create_car') }}">Добавить первый</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
