@@ -1,3 +1,5 @@
+from flask import flash, redirect, request, url_for
+from flask_admin import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -30,3 +32,25 @@ class CarAdmin(ModelView):
 
     can_view_details = True
     page_size = 25
+
+
+class ToolsAdmin(BaseView):
+    @expose("/")
+    def index(self):
+        from models import Car
+        from seed_data import SAMPLE_CARS
+
+        return self.render(
+            "admin/tools.html",
+            cars_count=Car.query.count(),
+            sample_count=len(SAMPLE_CARS),
+        )
+
+    @expose("/seed/", methods=["POST"])
+    def seed(self):
+        from car_service import seed_cars
+
+        clear = request.form.get("clear") == "1"
+        category, message = seed_cars(clear=clear)
+        flash(message, category)
+        return redirect(url_for(".index"))

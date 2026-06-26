@@ -5,7 +5,7 @@ from flask import Flask, redirect, url_for
 from flask_admin import Admin
 from flask_migrate import Migrate
 
-from admin_views import CarAdmin
+from admin_views import CarAdmin, ToolsAdmin
 from cli import clear_cars, seed_cars
 from extensions import db
 from models import Car
@@ -23,6 +23,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 admin = Admin(app, name="Flask Cars", url="/admin")
+admin.add_view(ToolsAdmin(name="Инструменты", endpoint="tools"))
 admin.add_view(CarAdmin(Car, db, name="Автомобили", endpoint="cars"))
 
 app.cli.add_command(clear_cars)

@@ -1,10 +1,7 @@
 import click
 from flask.cli import with_appcontext
-from sqlalchemy import text
 
-from extensions import db
-from models import Car
-from seed_data import SAMPLE_CARS
+from car_service import clear_cars_table, seed_cars as seed_cars_table
 
 
 @click.command("clear-cars")
@@ -12,6 +9,8 @@ from seed_data import SAMPLE_CARS
 @with_appcontext
 def clear_cars(yes: bool) -> None:
     """Удалить все записи из таблицы cars."""
+    from models import Car
+
     count = Car.query.count()
     if count == 0:
         click.echo("Таблица cars уже пуста.")
@@ -21,9 +20,8 @@ def clear_cars(yes: bool) -> None:
         click.echo("Отменено.")
         return
 
-    db.session.execute(text("TRUNCATE TABLE cars RESTART IDENTITY"))
-    db.session.commit()
-    click.echo(f"Таблица cars очищена. Удалено записей: {count}.")
+    _, message = clear_cars_table()
+    click.echo(message)
 
 
 @click.command("seed-cars")
@@ -32,25 +30,15 @@ def clear_cars(yes: bool) -> None:
 @with_appcontext
 def seed_cars(clear: bool, yes: bool) -> None:
     """Заполнить таблицу cars примерами автомобилей."""
+    from models import Car
+
     existing = Car.query.count()
-    if existing and not clear:
-        click.echo(
-            f"В таблице уже {existing} запис(ей). "
-            "Используйте --clear, чтобы очистить и заполнить заново."
-        )
-        return
+    if clear and existing:
+        if not yes and not click.confirm(
+            f"Очистить таблицу ({existing} запис(ей)) и добавить примеры?"
+        ):
+            click.echo("Отменено.")
+            return
 
-    if clear:
-        if existing:
-            if not yes and not click.confirm(
-                f"Очистить таблицу ({existing} запис(ей)) и добавить примеры?"
-            ):
-                click.echo("Отменено.")
-                return
-            db.session.execute(text("TRUNCATE TABLE cars RESTART IDENTITY"))
-
-    for make, model, year, color, price in SAMPLE_CARS:
-        db.session.add(Car(make=make, model=model, year=year, color=color, price=price))
-
-    db.session.commit()
-    click.echo(f"Добавлено автомобилей: {len(SAMPLE_CARS)}. Всего в таблице: {Car.query.count()}.")
+    _, message = seed_cars_table(clear=clear)
+    click.echo(message)
