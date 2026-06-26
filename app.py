@@ -5,11 +5,11 @@ from flask import Flask, redirect, url_for
 from flask_admin import Admin
 from flask_migrate import Migrate
 
-from admin_views import CarAdmin, ToolsAdmin
+from admin_views import CarAdmin, ToolsAdmin, UserAdmin
 from auth import SecureAdminIndexView, init_auth
 from cli import clear_cars, create_user, seed_cars
 from extensions import db
-from models import Car
+from models import Car, User
 
 load_dotenv()
 
@@ -31,6 +31,7 @@ admin = Admin(
     index_view=SecureAdminIndexView(),
 )
 admin.add_view(ToolsAdmin(name="Инструменты", endpoint="tools"))
+admin.add_view(UserAdmin(User, db, name="Пользователи", endpoint="users"))
 admin.add_view(CarAdmin(Car, db, name="Автомобили", endpoint="cars"))
 
 app.cli.add_command(clear_cars)
