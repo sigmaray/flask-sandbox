@@ -101,6 +101,52 @@ flask db history
 flask db stamp head
 ```
 
+## Консольные команды
+
+Для CLI-команд также нужна переменная окружения:
+
+```bash
+export FLASK_APP=app.py
+```
+
+Список доступных команд:
+
+```bash
+flask --help
+```
+
+### `flask seed-cars` — заполнить таблицу примерами
+
+Добавляет 16 тестовых автомобилей из `seed_data.py`. Если таблица уже содержит записи, команда ничего не делает.
+
+```bash
+flask seed-cars
+```
+
+Очистить таблицу и заполнить заново:
+
+```bash
+flask seed-cars --clear
+flask seed-cars --clear -y   # без подтверждения
+```
+
+### `flask clear-cars` — очистить таблицу
+
+Удаляет все записи из `cars` и сбрасывает счётчик `id`.
+
+```bash
+flask clear-cars
+flask clear-cars -y          # без подтверждения
+```
+
+### Типичный сценарий для разработки
+
+```bash
+flask db upgrade
+flask seed-cars
+python app.py
+```
+
 ## Стек
 
 - **Flask** — веб-фреймворк
@@ -115,6 +161,8 @@ app.py           — точка входа, инициализация Flask и 
 extensions.py    — экземпляр SQLAlchemy
 models.py        — модель Car
 admin_views.py   — настройки админ-панели для автомобилей
+cli.py           — консольные команды (seed-cars, clear-cars)
+seed_data.py     — тестовые данные для seed-cars
 migrations/      — файлы миграций Alembic
 ```
 
