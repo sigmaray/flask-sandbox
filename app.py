@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, redirect, url_for
 from flask_admin import Admin
+from flask_migrate import Migrate
 
 from admin_views import CarAdmin
 from extensions import db
@@ -18,6 +19,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+migrate = Migrate(app, db)
 
 admin = Admin(app, name="Flask Cars", url="/admin")
 admin.add_view(CarAdmin(Car, db, name="Автомобили", endpoint="cars"))
@@ -29,6 +31,4 @@ def index():
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(debug=os.environ.get("FLASK_DEBUG", "0") == "1", host="0.0.0.0", port=5000)

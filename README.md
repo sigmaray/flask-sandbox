@@ -34,6 +34,8 @@ FLASK_DEBUG=1
 
 ```bash
 source venv/bin/activate
+export FLASK_APP=app.py
+flask db upgrade
 python app.py
 ```
 
@@ -41,12 +43,69 @@ python app.py
 
 Главная страница перенаправляет в админ-панель: http://127.0.0.1:5000/admin
 
-Таблица `cars` создаётся автоматически при первом запуске (если ещё не существует).
+## Миграции
+
+Проект использует [Flask-Migrate](https://flask-migrate.readthedocs.io/) (Alembic) для управления схемой БД.
+
+Перед работой с миграциями задайте переменную окружения:
+
+```bash
+export FLASK_APP=app.py
+```
+
+### Первичная настройка (один раз)
+
+Если каталог `migrations/` уже есть в репозитории, этот шаг не нужен:
+
+```bash
+flask db init
+```
+
+### Применить миграции
+
+Создаёт или обновляет таблицы в БД до актуальной версии схемы:
+
+```bash
+flask db upgrade
+```
+
+### Создать новую миграцию
+
+После изменения моделей в `models.py`:
+
+```bash
+flask db migrate -m "Краткое описание изменений"
+flask db upgrade
+```
+
+Команда `migrate` сгенерирует файл в `migrations/versions/`. Проверьте его перед применением.
+
+### Откатить последнюю миграцию
+
+```bash
+flask db downgrade
+```
+
+### Текущая версия схемы
+
+```bash
+flask db current
+flask db history
+```
+
+### База уже существует без Alembic
+
+Если таблицы созданы вручную или до подключения миграций, отметьте текущую схему без изменений:
+
+```bash
+flask db stamp head
+```
 
 ## Стек
 
 - **Flask** — веб-фреймворк
 - **SQLAlchemy + Flask-SQLAlchemy** — ORM и работа с PostgreSQL
+- **Flask-Migrate (Alembic)** — миграции схемы БД
 - **Flask-Admin** — интерфейс для просмотра, создания, редактирования и удаления записей
 
 ## Структура проекта
@@ -56,6 +115,7 @@ app.py           — точка входа, инициализация Flask и 
 extensions.py    — экземпляр SQLAlchemy
 models.py        — модель Car
 admin_views.py   — настройки админ-панели для автомобилей
+migrations/      — файлы миграций Alembic
 ```
 
 ## Поля автомобиля
