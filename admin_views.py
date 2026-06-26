@@ -114,3 +114,11 @@ class ToolsAdmin(SecureBaseView):
         category, message = seed_cars(clear=clear)
         flash(message, category)
         return redirect(url_for(".index"))
+
+    @expose("/clear/", methods=["POST"])
+    def clear(self):
+        from car_service import clear_cars_table
+
+        category, message = clear_cars_table()
+        flash(message, category)
+        return redirect(url_for(".index"))

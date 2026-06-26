@@ -29,10 +29,17 @@
                         Clear and seed
                     </button>
                 </form>
+
+                <form method="post" action="{{ url_for('.clear') }}" class="d-inline mt-2"
+                      onsubmit="return confirm('Clear all cars from the table?');">
+                    <button type="submit" class="btn btn-danger">
+                        Clear cars
+                    </button>
+                </form>
             </div>
             <div class="card-footer text-muted small">
-                Equivalent to the CLI commands <code>flask seed-cars</code> and
-                <code>flask seed-cars --clear</code>.
+                Equivalent to the CLI commands <code>flask seed-cars</code>,
+                <code>flask seed-cars --clear</code>, and <code>flask clear-cars</code>.
             </div>
         </div>
     </div>
