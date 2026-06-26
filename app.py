@@ -6,7 +6,8 @@ from flask_admin import Admin
 from flask_migrate import Migrate
 
 from admin_views import CarAdmin, ToolsAdmin
-from cli import clear_cars, seed_cars
+from auth import SecureAdminIndexView, init_auth
+from cli import clear_cars, create_user, seed_cars
 from extensions import db
 from models import Car
 
@@ -21,12 +22,19 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+init_auth(app)
 
-admin = Admin(app, name="Flask Cars", url="/admin")
+admin = Admin(
+    app,
+    name="Flask Cars",
+    url="/admin",
+    index_view=SecureAdminIndexView(),
+)
 admin.add_view(ToolsAdmin(name="Инструменты", endpoint="tools"))
 admin.add_view(CarAdmin(Car, db, name="Автомобили", endpoint="cars"))
 
 app.cli.add_command(clear_cars)
+app.cli.add_command(create_user)
 app.cli.add_command(seed_cars)
 
 

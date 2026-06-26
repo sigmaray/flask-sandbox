@@ -43,7 +43,9 @@ python app.py
 
 Главная страница перенаправляет в админ-панель: http://127.0.0.1:5000/admin
 
-## Миграции
+Доступ к админ-панели только для аутентифицированных пользователей. Регистрации на сайте нет — пользователей создают через консоль (см. `flask create-user`).
+
+## Консольные команды
 
 Проект использует [Flask-Migrate](https://flask-migrate.readthedocs.io/) (Alembic) для управления схемой БД.
 
@@ -115,6 +117,14 @@ export FLASK_APP=app.py
 flask --help
 ```
 
+### `flask create-user` — создать пользователя
+
+Интерактивно запрашивает логин, пароль и подтверждение пароля. Созданный пользователь может войти в админ-панель.
+
+```bash
+flask create-user
+```
+
 ### `flask seed-cars` — заполнить таблицу примерами
 
 Добавляет 16 тестовых автомобилей из `seed_data.py`. Если таблица уже содержит записи, команда ничего не делает.
@@ -143,6 +153,7 @@ flask clear-cars -y          # без подтверждения
 
 ```bash
 flask db upgrade
+flask create-user
 flask seed-cars
 python app.py
 ```
@@ -153,15 +164,17 @@ python app.py
 - **SQLAlchemy + Flask-SQLAlchemy** — ORM и работа с PostgreSQL
 - **Flask-Migrate (Alembic)** — миграции схемы БД
 - **Flask-Admin** — интерфейс для просмотра, создания, редактирования и удаления записей
+- **Flask-Login** — аутентификация для доступа к админ-панели
 
 ## Структура проекта
 
 ```
 app.py           — точка входа, инициализация Flask и Flask-Admin
+auth.py          — аутентификация и защита админ-панели
 extensions.py    — экземпляр SQLAlchemy
-models.py        — модель Car
+models.py        — модели Car и User
 admin_views.py   — настройки админ-панели для автомобилей
-cli.py           — консольные команды (seed-cars, clear-cars)
+cli.py           — консольные команды (create-user, seed-cars, clear-cars)
 seed_data.py     — тестовые данные для seed-cars
 migrations/      — файлы миграций Alembic
 ```

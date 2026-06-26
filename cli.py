@@ -2,6 +2,7 @@ import click
 from flask.cli import with_appcontext
 
 from car_service import clear_cars_table, seed_cars as seed_cars_table
+from extensions import db
 
 
 @click.command("clear-cars")
@@ -42,3 +43,36 @@ def seed_cars(clear: bool, yes: bool) -> None:
 
     _, message = seed_cars_table(clear=clear)
     click.echo(message)
+
+
+@click.command("create-user")
+@with_appcontext
+def create_user() -> None:
+    """Создать пользователя для входа в админ-панель."""
+    from models import User
+
+    username = click.prompt("Логин").strip()
+    if not username:
+        click.echo("Логин не может быть пустым.")
+        return
+
+    if User.query.filter_by(username=username).first():
+        click.echo(f"Пользователь «{username}» уже существует.")
+        return
+
+    password = click.prompt("Пароль", hide_input=True)
+    password_confirm = click.prompt("Подтверждение пароля", hide_input=True)
+
+    if password != password_confirm:
+        click.echo("Пароли не совпадают.")
+        return
+
+    if not password:
+        click.echo("Пароль не может быть пустым.")
+        return
+
+    user = User(username=username)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    click.echo(f"Пользователь «{username}» создан.")

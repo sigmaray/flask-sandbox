@@ -1,9 +1,10 @@
 from flask import flash, redirect, request, url_for
-from flask_admin import BaseView, expose
-from flask_admin.contrib.sqla import ModelView
+from flask_admin import expose
+
+from auth import SecureBaseView, SecureModelView
 
 
-class CarAdmin(ModelView):
+class CarAdmin(SecureModelView):
     column_list = ["id", "make", "model", "year", "color", "price", "updated_at"]
     column_searchable_list = ["make", "model", "color"]
     column_filters = ["make", "year", "color"]
@@ -34,7 +35,7 @@ class CarAdmin(ModelView):
     page_size = 25
 
 
-class ToolsAdmin(BaseView):
+class ToolsAdmin(SecureBaseView):
     @expose("/")
     def index(self):
         from models import Car
