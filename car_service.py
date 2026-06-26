@@ -18,9 +18,13 @@ def seed_cars(*, clear: bool = False) -> tuple[str, str]:
     if clear and existing:
         db.session.execute(text("TRUNCATE TABLE cars RESTART IDENTITY"))
 
-    for make, model, year, color, price in SAMPLE_CARS:
-        db.session.add(Car(make=make, model=model, year=year, color=color, price=price))
-
+    db.session.bulk_insert_mappings(
+        Car,
+        [
+            {"make": make, "model": model, "year": year, "color": color, "price": price}
+            for make, model, year, color, price in SAMPLE_CARS
+        ],
+    )
     db.session.commit()
     return (
         "success",

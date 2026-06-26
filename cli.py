@@ -5,7 +5,7 @@ from car_service import clear_cars_table, seed_cars as seed_cars_table
 from extensions import db
 
 
-@click.command("clear-cars")
+@click.command("cars-clear")
 @click.option("--yes", "-y", is_flag=True, help="Не спрашивать подтверждение.")
 @with_appcontext
 def clear_cars(yes: bool) -> None:
@@ -25,7 +25,7 @@ def clear_cars(yes: bool) -> None:
     click.echo(message)
 
 
-@click.command("seed-cars")
+@click.command("cars-seed")
 @click.option("--clear", "-c", is_flag=True, help="Очистить таблицу перед заполнением.")
 @click.option("--yes", "-y", is_flag=True, help="Не спрашивать подтверждение при очистке.")
 @with_appcontext
@@ -45,7 +45,7 @@ def seed_cars(clear: bool, yes: bool) -> None:
     click.echo(message)
 
 
-@click.command("create-user")
+@click.command("users-create")
 @with_appcontext
 def create_user() -> None:
     """Создать пользователя для входа в админ-панель."""
