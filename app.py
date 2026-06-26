@@ -30,9 +30,9 @@ admin = Admin(
     url="/admin",
     index_view=SecureAdminIndexView(),
 )
-admin.add_view(ToolsAdmin(name="Инструменты", endpoint="tools"))
-admin.add_view(UserAdmin(User, db, name="Пользователи", endpoint="users"))
-admin.add_view(CarAdmin(Car, db, name="Автомобили", endpoint="cars"))
+admin.add_view(ToolsAdmin(name="Tools", endpoint="tools"))
+admin.add_view(UserAdmin(User, db, name="Users", endpoint="users"))
+admin.add_view(CarAdmin(Car, db, name="Cars", endpoint="cars"))
 
 app.cli.add_command(clear_cars)
 app.cli.add_command(create_user)

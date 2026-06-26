@@ -11,8 +11,8 @@ def seed_cars(*, clear: bool = False) -> tuple[str, str]:
     if existing and not clear:
         return (
             "warning",
-            f"В таблице уже {existing} запис(ей). "
-            "Используйте «Очистить и заполнить», чтобы пересоздать данные.",
+            f"The table already has {existing} record(s). "
+            "Use Clear and seed to recreate the data.",
         )
 
     if clear and existing:
@@ -24,7 +24,7 @@ def seed_cars(*, clear: bool = False) -> tuple[str, str]:
     db.session.commit()
     return (
         "success",
-        f"Добавлено автомобилей: {len(SAMPLE_CARS)}. Всего в таблице: {Car.query.count()}.",
+        f"Added {len(SAMPLE_CARS)} cars. Total in table: {Car.query.count()}.",
     )
 
 
@@ -32,8 +32,8 @@ def clear_cars_table() -> tuple[str, str]:
     """Очистить таблицу cars. Возвращает (category, message)."""
     count = Car.query.count()
     if count == 0:
-        return ("info", "Таблица cars уже пуста.")
+        return ("info", "The cars table is already empty.")
 
     db.session.execute(text("TRUNCATE TABLE cars RESTART IDENTITY"))
     db.session.commit()
-    return ("success", f"Таблица cars очищена. Удалено записей: {count}.")
+    return ("success", f"Cars table cleared. Removed {count} record(s).")

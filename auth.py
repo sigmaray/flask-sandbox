@@ -8,7 +8,7 @@ from models import User
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
-login_manager.login_message = "Войдите, чтобы получить доступ."
+login_manager.login_message = "Please log in to access this page."
 login_manager.login_message_category = "warning"
 
 
@@ -61,7 +61,7 @@ def init_auth(app) -> None:
                     return redirect(next_page)
                 return redirect(url_for("cars.index_view"))
 
-            flash("Неверный логин или пароль.", "danger")
+            flash("Invalid username or password.", "danger")
 
         return render_template("login.html")
 

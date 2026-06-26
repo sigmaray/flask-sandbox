@@ -15,22 +15,22 @@ class CarAdmin(SecureModelView):
 
     column_labels = {
         "id": "ID",
-        "make": "Марка",
-        "model": "Модель",
-        "year": "Год",
-        "color": "Цвет",
-        "price": "Цена",
-        "created_at": "Создан",
-        "updated_at": "Обновлён",
+        "make": "Make",
+        "model": "Model",
+        "year": "Year",
+        "color": "Color",
+        "price": "Price",
+        "created_at": "Created",
+        "updated_at": "Updated",
     }
 
     form_columns = ["make", "model", "year", "color", "price"]
     form_args = {
-        "make": {"label": "Марка"},
-        "model": {"label": "Модель"},
-        "year": {"label": "Год"},
-        "color": {"label": "Цвет"},
-        "price": {"label": "Цена"},
+        "make": {"label": "Make"},
+        "model": {"label": "Model"},
+        "year": {"label": "Year"},
+        "color": {"label": "Color"},
+        "price": {"label": "Price"},
     }
 
     can_view_details = True
@@ -47,17 +47,17 @@ class UserAdmin(SecureModelView):
 
     column_labels = {
         "id": "ID",
-        "username": "Логин",
+        "username": "Username",
     }
 
     form_columns = ["username", "password", "password_confirm"]
     form_args = {
-        "username": {"label": "Логин"},
+        "username": {"label": "Username"},
     }
 
     form_extra_fields = {
-        "password": PasswordField("Пароль"),
-        "password_confirm": PasswordField("Подтверждение пароля"),
+        "password": PasswordField("Password"),
+        "password_confirm": PasswordField("Confirm password"),
     }
 
     can_view_details = True
@@ -66,11 +66,11 @@ class UserAdmin(SecureModelView):
     def create_form(self, obj=None):
         form = super().create_form(obj)
         form.password.validators = [
-            validators.DataRequired(message="Пароль обязателен."),
+            validators.DataRequired(message="Password is required."),
         ]
         form.password_confirm.validators = [
             validators.DataRequired(),
-            validators.EqualTo("password", message="Пароли не совпадают."),
+            validators.EqualTo("password", message="Passwords do not match."),
         ]
         return form
 
@@ -79,7 +79,7 @@ class UserAdmin(SecureModelView):
         form.password.validators = [validators.Optional()]
         form.password_confirm.validators = [
             validators.Optional(),
-            validators.EqualTo("password", message="Пароли не совпадают."),
+            validators.EqualTo("password", message="Passwords do not match."),
         ]
         return form
 
@@ -89,7 +89,7 @@ class UserAdmin(SecureModelView):
 
     def delete_model(self, model):
         if model.id == current_user.id:
-            flash("Нельзя удалить текущего пользователя.", "error")
+            flash("Cannot delete the current user.", "error")
             return False
         return super().delete_model(model)
 

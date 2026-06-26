@@ -1,37 +1,37 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<h1 class="mb-4">Инструменты</h1>
+<h1 class="mb-4">Tools</h1>
 
 <div class="row">
     <div class="col-md-8 col-lg-6">
         <div class="card">
-            <div class="card-header">Seeding автомобилей</div>
+            <div class="card-header">Car seeding</div>
             <div class="card-body">
                 <p class="card-text">
-                    Заполнить таблицу <code>cars</code> тестовыми данными
-                    ({{ sample_count }} автомобилей).
+                    Populate the <code>cars</code> table with sample data
+                    ({{ sample_count }} cars).
                 </p>
                 <p class="text-muted mb-4">
-                    Сейчас в таблице: <strong>{{ cars_count }}</strong> запис(ей).
+                    Current table size: <strong>{{ cars_count }}</strong> record(s).
                 </p>
 
                 <form method="post" action="{{ url_for('.seed') }}" class="d-inline">
                     <button type="submit" class="btn btn-primary mr-2">
-                        Заполнить примерами
+                        Seed with samples
                     </button>
                 </form>
 
                 <form method="post" action="{{ url_for('.seed') }}" class="d-inline"
-                      onsubmit="return confirm('Очистить таблицу и добавить примеры автомобилей?');">
+                      onsubmit="return confirm('Clear the table and add sample cars?');">
                     <input type="hidden" name="clear" value="1">
                     <button type="submit" class="btn btn-warning">
-                        Очистить и заполнить
+                        Clear and seed
                     </button>
                 </form>
             </div>
             <div class="card-footer text-muted small">
-                Аналог консольных команд <code>flask seed-cars</code> и
+                Equivalent to the CLI commands <code>flask seed-cars</code> and
                 <code>flask seed-cars --clear</code>.
             </div>
         </div>
