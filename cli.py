@@ -1,5 +1,6 @@
 import click
 from flask.cli import with_appcontext
+from sqlalchemy import text
 
 from car_service import clear_cars_table, seed_cars as seed_cars_table
 from extensions import db
@@ -43,6 +44,27 @@ def seed_cars(clear: bool, yes: bool) -> None:
 
     _, message = seed_cars_table(clear=clear)
     click.echo(message)
+
+
+@click.command("users-clear")
+@click.option("--yes", "-y", is_flag=True, help="Не спрашивать подтверждение.")
+@with_appcontext
+def clear_users(yes: bool) -> None:
+    """Удалить все записи из таблицы users."""
+    from models import User
+
+    count = User.query.count()
+    if count == 0:
+        click.echo("Таблица users уже пуста.")
+        return
+
+    if not yes and not click.confirm(f"Удалить {count} пользовател(ей) из таблицы users?"):
+        click.echo("Отменено.")
+        return
+
+    db.session.execute(text("TRUNCATE TABLE users RESTART IDENTITY"))
+    db.session.commit()
+    click.echo(f"Таблица users очищена. Удалено записей: {count}.")
 
 
 @click.command("users-create")

@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 
 from admin_views import CarAdmin, ToolsAdmin, UserAdmin
 from auth import SecureAdminIndexView, init_auth
-from cli import clear_cars, create_user, seed_cars
+from cli import clear_cars, clear_users, create_user, seed_cars
 from extensions import db
 from models import Car, User
 
@@ -35,6 +35,7 @@ admin.add_view(UserAdmin(User, db, name="Users", endpoint="users"))
 admin.add_view(CarAdmin(Car, db, name="Cars", endpoint="cars"))
 
 app.cli.add_command(clear_cars)
+app.cli.add_command(clear_users)
 app.cli.add_command(create_user)
 app.cli.add_command(seed_cars)
 
